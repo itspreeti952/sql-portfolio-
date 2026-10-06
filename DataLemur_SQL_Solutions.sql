@@ -21,7 +21,6 @@ from tweets
 where tweet_date >= '2022-01-01' and tweet_date <= '2022-12-31'
 group by user_id
 )
-
 select tweet_bucket as bucket, count(user_id) as user_num
 from tweet_counts
 group by tweet_bucket;
