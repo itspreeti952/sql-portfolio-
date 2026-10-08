@@ -54,7 +54,7 @@ where finish_date is null;
 -- Platfrom:- DataLemur
 -- Company:-New York times(Difficultty; Easy)
 -- Question:- (calculate totalviewership for laptops and vs mobile devices(tablet + phone) in 1 row)
----------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 SELECT  
       sum(case when device_type = 'laptop' then 1 else 0 
       end ) as laptop_views,
@@ -66,7 +66,7 @@ from viewership;
 -- Platfrom:- DataLemur
 -- Company:-Facebook(Difficultty; Easy)
 -- Question:- (Find the number of days between each user's first and last post in 2021 (for users who posted at least twice))
----------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------
 SELECT user_id, datediff(max(post_date), min(post_date)) as days_between
 from posts 
 where year(post_date) = 2021
@@ -77,10 +77,52 @@ having count(post_id) >=2;
 -- Platfrom:- DataLemur
 -- Company:-Microsoft(Difficultty; Easy)
 -- Question:- (Find top 2 power users who sent the highest number of messages in august 2022)
----------------------------------------------------------------------
+---------------------------------------------------------------------------------------------
 SELECT sender_id, count(message_id) as count_messages
 from messages 
 where extract(year from sent_date) = 2022 and extract(month from sent_date) = 8
 group by sender_id
 order by count_messages desc
 limit 2;
+
+
+-- Platfrom:- DataLemur
+-- Company:-Amazon(Difficultty; Easy)
+-- Question:- (Calculate the average star rating for each product grouped by month.)
+------------------------------------------------------------------------------------
+SELECT extract(month from submit_date) as mth, product_id, round(avg(stars), 2) as avg_stars
+FROM reviews 
+group by extract(month from submit_date), product_id
+order by mth, product_id;
+
+
+-- Platfrom:- DataLemur
+-- Company:-Faang(Difficultty; Easy)
+-- Question:- (Find employees who earn more than their direct managers.)
+------------------------------------------------------------------------
+SELECT e.employee_id, e.name 
+from employee e 
+join employee m 
+on e.manager_id = m.employee_id
+where e.salary > m.salary;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
