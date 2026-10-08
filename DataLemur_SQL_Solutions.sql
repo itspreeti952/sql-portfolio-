@@ -49,3 +49,15 @@ order by p.page_id asc;
 select part, assembly_step 
 from parts_assembly
 where finish_date is null;
+
+
+-- Platfrom:- DataLemur
+-- Company:-New York times(Difficultty; Easy)
+-- Question:- (calculate totalviewership for laptops and vs mobile devices(tablet + phone) in 1 row)
+---------------------------------------------------------------------
+SELECT  
+      sum(case when device_type = 'laptop' then 1 else 0 
+      end ) as laptop_views,
+      sum(case when device_type in('tablet', 'phone') then 1 else 0 
+      end) as mobile_views
+from viewership;
