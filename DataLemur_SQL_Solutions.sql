@@ -28,6 +28,11 @@ from tweet_counts
 group by tweet_bucket;
 
 
+SELECT account_id, sum(case when transaction_type = 'Deposit' then amount else - amount end) as final_balance
+from transactions
+group by account_id;
+
+
 -- Platfrom:- DataLemur
 -- Company:-Facebook (Difficultty; Easy)
 -- Question:- Find facebook pages with zero(0) likes (unliked pages)
@@ -106,6 +111,14 @@ join employee m
 on e.manager_id = m.employee_id
 where e.salary > m.salary;
 
+
+-- Platfrom:- DataLemur
+-- Company:- PayPal (Difficultty; Easy)
+-- Question:- (calculate the final account balance for each account)
+-----------------------------------------------------------------
+SELECT account_id, sum(case when transaction_type = 'Deposit' then amount else - amount end) as final_balance
+from transactions
+group by account_id;
 
 
 
