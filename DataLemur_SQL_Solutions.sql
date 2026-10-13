@@ -115,22 +115,71 @@ where e.salary > m.salary;
 -- Platfrom:- DataLemur
 -- Company:- PayPal (Difficultty; Easy)
 -- Question:- (calculate the final account balance for each account)
------------------------------------------------------------------
+--------------------------------------------------------------------
 SELECT account_id, sum(case when transaction_type = 'Deposit' then amount else - amount end) as final_balance
 from transactions
 group by account_id;
 
 
+-- Platfrom:- DataLemur
+-- Company:- Robinhood(Difficultty; Easy)
+-- Question:- (Find top 3 cities with the highest number of completed trade orders)
+-----------------------------------------------------------------------------------
+select u.city, count(t.order_id) as total_orders 
+from trades t 
+join users u 
+on t.user_id = u.user_id 
+where t.status = 'Completed'
+group by u.city 
+order by total_orders desc 
+limit 3;
+
+
+-- Platfrom:- DataLemur
+-- Company:- Robinhood(Difficultty; Easy)
+-- Question:- (Calculate the click-through rate (CTR) for each each app in 2022)
+--------------------------------------------------------------------------------
+SELECT app_id, round(100.0*count(case when event_type = 'click' then 1 end)/
+count(case when event_type = 'impression' then 1 end),2) as CTR 
+FROM events
+where extract(year from timestamp) = 2022
+group by app_id;
+
+
+-- Platfrom:- DataLemur
+-- Company:- Tiktok(Difficultty; Easy)
+-- Question:- (Find users who confirmed their sign-up on the exact second day)
+------------------------------------------------------------------------------
+SELECT e.user_id 
+from emails e 
+join texts t 
+on e.email_id = t.email_id
+where t.signup_action = 'confirmed' and datediff(t.action_date, e.signup_date) = 1; 
 
 
 
+-- Platfrom:- DataLemur
+-- Company:- IBM(Difficultty; Easy)
+-- Question:- (Generate a histogram showing the count of unique queries run by employees in Q3 2023)
+----------------------------------------------------------------------------------------------------
+SELECT unique_queries, count(employee_id) as employee_count
+from ( select e.employee_id, count(q.query_id) as unique_queries
+from employees e 
+left join queries q on e.employee_id = q.employee_id and q.query_starttime >='2023-07-01'
+and q.query_starttime < '2023-10-01'
+group by e.employee_id ) as employee_queries
+group by unique_queries
+order by unique_queries;
 
 
-
-
-
-
-
+-- Platfrom:- DataLemur
+-- Company:- JPMorgan chase (Difficultty; Easy)
+-- Question:- (Calculate the difference between the highest and lowest monthly issuance for each credit card)
+-------------------------------------------------------------------------------------------------------------
+SELECT card_name, (max(issued_amount) - min(issued_amount)) as difference
+from monthly_cards_issued
+group by card_name
+order by difference desc;
 
 
 
