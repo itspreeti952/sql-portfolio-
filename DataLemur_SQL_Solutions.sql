@@ -182,9 +182,87 @@ group by card_name
 order by difference desc;
 
 
+-- Platfrom:- DataLemur
+-- Company:- Alibaba(Difficultty; Easy)
+-- Question:- (Find the mean number of items per order, rounded to 1 decimal place.)
+------------------------------------------------------------------------------------
+SELECT round(
+(1.0 * sum(item_count::decimal * order_occurrences)) / 
+sum(order_occurrences),1) as mean
+from items_per_order;
+
+
+-- Platfrom:- DataLemur
+-- Company:- CVS Health(Difficultty; Easy)
+-- Question:- (Find the mean number of items per order, rounded to 1 decimal place.)
+------------------------------------------------------------------------------------
+SELECT drug, (total_sales - cogs) as total_profit
+from pharmacy_sales
+order by total_profit DESC
+limit 3;
+
+
+-- Platfrom:- DataLemur
+-- Company:- CVS Health(Difficultty; Easy)
+-- Question:- (Identify manufacturers with net losses, counting their unprofitable drugs and total loss amount)
+------------------------------------------------------------------------------------
+SELECT manufacturer, count(drug) as drug_count,
+      sum(cogs - total_sales) as total_loss 
+from pharmacy_sales
+where cogs > total_sales 
+group by manufacturer 
+order by total_loss desc;
+
+
+-- Platfrom:- DataLemur
+-- Company:- United Health group (Difficultty; Easy)
+-- Question:- (Find how many policcy holders made 3 or more calls)
+------------------------------------------------------------------
+select count(policy_holder_id) as member_count
+from (
+      select policy_holder_id
+      from callers
+      group by policy_holder_id
+      having count(case_id) >= 3
+      ) as frequent_callers;
 
 
 
+-- Platfrom:- DataLemur
+-- Company:- Uber (Difficultty; Easy)
+-- Question:- (Retrieve the exact 3rd transaction for every user)
+-----------------------------------------------------------------
+SELECT user_id, spend, transaction_date
+from (
+      select user_id, spend, transaction_date, 
+              row_number() over (partition by user_id order by transaction_date) as rn 
+      from transactions) as ranked_transactions
+where rn = 3;
 
 
+-- Platfrom:- DataLemur
+-- Company:- FAANG (Difficultty; Easy)
+-- Question:- (Find the second highest unique salary from the employee table)
+-----------------------------------------------------------------------------
+SELECT distinct salary 
+from employee
+order by salary desc 
+limit 1 offset 1;
 
+
+-- Platfrom:- DataLemur
+-- Company:- Snapchat (Difficultty; Easy)
+-- Question:- (Calculate the percentage of time spent sending vs. opening snaps for each age bucket.)
+-----------------------------------------------------------------------------------------------------
+SELECT age.age_bucket, 
+        round(100.0 * sum(case when act.activity_type = 'send' then act.time_spent else 0 end)/
+        sum(act.time_spent), 2) as send_perc,
+        round(100.0 * sum(case when act.activity_type = 'open' then act.time_spent else 0 end)/
+        sum(act.time_spent), 2) as open_perc
+from activities act 
+join age_breakdown age on act.user_id = age.user_id
+where act.activity_type in ('send', 'open')
+group by age.age_bucket;
+
+
+      
