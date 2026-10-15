@@ -358,8 +358,23 @@ from products
 );
     
 
-
-
+-- Platfrom:- DataLemur
+-- Company:- Google(Difficultty; Easy)
+-- Question:- Calculate the sum of odd-numbered and even-numbered measurements seperately per day
+-------------------------------------------------------------------------------------------------
+SELECT cast(measurement_time as date) as measurement_day,
+        sum(case when rn % 2 != 0 then measurement_value else 0 end) as odd_sum,
+        sum(case when rn % 2 = 0 then measurement_value else 0 end) as even_sum
+from (
+    select measurement_value, measurement_time,
+    row_number() over (
+    partition by cast(measurement_time as date)
+    order by measurement_time
+    ) as rn 
+    from measurements 
+)as ranked_measurements
+group by cast(measurement_time as date)
+order by measurement_day;
 
 
 
