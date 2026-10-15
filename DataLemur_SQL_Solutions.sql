@@ -265,4 +265,113 @@ where act.activity_type in ('send', 'open')
 group by age.age_bucket;
 
 
+-- Platfrom:- DataLemur
+-- Company:- twitter (Difficultty; Easy)
+-- Question:- (Calculate the 3 day rolling average of tweets for each user)
+---------------------------------------------------------------------------
+SELECT user_id, tweet_date,
+        round(avg(tweet_count) over (
+        partition by user_id
+        order by tweet_date
+        rows between 2 preceding and current row),2) as rolling_averages
+from tweets;
+
+
+
+-- Platfrom:- DataLemur
+-- Company:- Amazon(Difficultty; Easy)
+-- Question:- (Identify the top 2 highest-grossing products within each category for the year 2022)
+---------------------------------------------------------------------------------------------------
+SELECT category, product, total_spend
+from (
+      select category, product, sum(spend) as total_spend,
+      dense_rank() over (
+      partition by category
+      order by sum(spend) desc) as ranking
+      from product_spend
+      where extract(year from transaction_date) = 2022
+      group by category, product) as ranked_spend
+where ranking <= 2;
+
+
+-- Platfrom:- DataLemur
+-- Company:- FAANG(Difficultty; Easy)
+-- Question:- (Find employees who earn the top three salaries in each department)
+---------------------------------------------------------------------------------
+with ranked_salary as (
+    select name, salary, department_id, 
+    dense_rank() over (
+        partition by department_id
+        order by salary DESC
+    ) as ranking 
+    from employee
+)
+select d.department_name, s.name, s.salary
+from ranked_salary as s 
+inner join department as d 
+on s.department_id = d.department_id
+where s.ranking <=3
+order by d.department_name asc, s.salary desc, s.name asc;
+
+
+
+-- Platfrom:- DataLemur
+-- Company:- Tiktok(Difficultty; Easy)
+-- Question:- (Calculate the signup confirmation (activation) rate rounded to 2 decimal places.
+-----------------------------------------------------------------------------------------------
+SELECT round(count(t.email_id)::decimal/ count(distinct e.email_id),2) as confirm_rate
+from emails e 
+left join texts t 
+on e.email_id = t.email_id and t.signup_action = 'Confirmed';
+
+
+-- Platfrom:- DataLemur
+-- Company:- Spotify(Difficultty; Easy)
+-- Question:- Calculate cumulative song plays per user up to august 4th, 2022.
+-----------------------------------------------------------------------------
+SELECT user_id, song_id, sum(song_plays) as song_plays
+from (
+      select user_id, song_id, song_plays
+      from songs_history
+      
+      union all 
+      select user_id, song_id, count(*) as song_plays
+      from songs_weekly
+      where listen_time <= '2022-08-04 23:59:59'
+      group by user_id, song_id
+      ) as combined_history 
+group by user_id, song_id
+order by song_plays desc;
+
+
+-- Platfrom:- DataLemur
+-- Company:- Microsoft(Difficultty; Easy)
+-- Question:- Identify customer IDs who have purchased at least one product from every available category
+---------------------------------------------------------------------------------------------------------
+SELECT c.customer_id
+from customer_contracts c 
+join products p 
+on c.product_id = p.product_id
+group by c.customer_id
+having count(distinct p.product_category) = (select count(distinct product_category) 
+from products
+);
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       
